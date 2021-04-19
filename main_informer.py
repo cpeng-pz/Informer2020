@@ -61,11 +61,13 @@ args = parser.parse_args()
 args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
 
 if args.use_gpu and args.use_multi_gpu:
-    args.dvices = args.devices.replace(' ','')
+    # 把 args.devices 字符串解析成数组保存到 args.device_ids，再设置 args.gpu 为第一个 device
+    args.dvices = args.devices.replace(' ','') 
     device_ids = args.devices.split(',')
     args.device_ids = [int(id_) for id_ in device_ids]
     args.gpu = args.device_ids[0]
 
+# 用于根据数据集名称自动设置文件名、目标特征，同时根据args.features设置输入输出维度的dictionary
 data_parser = {
     'ETTh1':{'data':'ETTh1.csv','T':'OT','M':[7,7,7],'S':[1,1,1],'MS':[7,7,1]},
     'ETTh2':{'data':'ETTh2.csv','T':'OT','M':[7,7,7],'S':[1,1,1],'MS':[7,7,1]},
@@ -74,11 +76,15 @@ data_parser = {
 }
 if args.data in data_parser.keys():
     data_info = data_parser[args.data]
-    args.data_path = data_info['data']
-    args.target = data_info['T']
-    args.enc_in, args.dec_in, args.c_out = data_info[args.features]
+    args.data_path = data_info['data'] # 数据文件名
+    args.target = data_info['T'] # 要预测的目标特征
+    args.enc_in, args.dec_in, args.c_out = data_info[args.features] # enc_in, dec_in, c_out 三个维度
 
+# 把类似 '3,2,1' 的字符串解析为 [3, 2, 1] 这样的整数数组
+# stack encoder layers
 args.s_layers = [int(s_l) for s_l in args.s_layers.replace(' ','').split(',')]
+
+# 解析出的 args.detail_freq 可以是 '2h' 之类的详细 frequency，但 args.freq 获取的就是最后的 'h'
 args.detail_freq = args.freq
 args.freq = args.freq[-1:]
 
@@ -89,7 +95,8 @@ Exp = Exp_Informer
 
 for ii in range(args.itr):
     # setting record of experiments
-    setting = '{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_at{}_fc{}_eb{}_dt{}_{}_{}'.format(args.model, args.data, args.features, 
+    setting = '{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_at{}_fc{}_eb{}_dt{}_{}_{}'.format(
+                args.model, args.data, args.features, 
                 args.seq_len, args.label_len, args.pred_len,
                 args.d_model, args.n_heads, args.e_layers, args.d_layers, args.d_ff, args.attn, args.factor, args.embed, args.distil, args.des, ii)
 

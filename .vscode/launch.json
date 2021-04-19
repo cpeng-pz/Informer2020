@@ -1,0 +1,29 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "main_informer",
+            "type": "python",
+            "request": "launch",
+            "program": "main_informer.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--model", "informer",
+                "--data", "ETTh1",
+                "--features", "M", 
+                "--seq_len", "48",
+                "--label_len", "48",
+                "--pred_len", "24",
+                "--e_layers", "2",
+                "--d_layers", "1",
+                "--attn", "prob",
+                "--des", "'Exp'",
+                "--itr", "5", 
+                "--factor", "3",
+            ]
+        }
+    ]
+}

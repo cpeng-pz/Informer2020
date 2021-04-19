@@ -90,26 +90,25 @@ def time_features_from_frequency_str(freq_str: str) -> List[TimeFeature]:
     }
 
     offset = to_offset(freq_str)
-
-    for offset_type, feature_classes in features_by_offsets.items():
-        if isinstance(offset, offset_type):
-            return [cls() for cls in feature_classes]
-
-    supported_freq_msg = f"""
-    Unsupported frequency {freq_str}
-    The following frequencies are supported:
-        Y   - yearly
-            alias: A
-        M   - monthly
-        W   - weekly
-        D   - daily
-        B   - business days
-        H   - hourly
-        T   - minutely
-            alias: min
-        S   - secondly
-    """
-    raise RuntimeError(supported_freq_msg)
+    try:
+        feature_classes = features_by_offsets[type(offset)]
+        return [cls() for cls in feature_classes]
+    except KeyError:
+        supported_freq_msg = f"""
+        Unsupported frequency {freq_str}
+        The following frequencies are supported:
+            Y   - yearly
+                alias: A
+            M   - monthly
+            W   - weekly
+            D   - daily
+            B   - business days
+            H   - hourly
+            T   - minutely
+                alias: min
+            S   - secondly
+        """
+        raise RuntimeError(supported_freq_msg)
 
 def time_features(dates, timeenc=1, freq='h'):
     if timeenc==0:

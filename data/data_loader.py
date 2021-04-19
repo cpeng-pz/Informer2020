@@ -59,7 +59,7 @@ class Dataset_ETT_hour(Dataset):
             df_data = df_raw[[self.target]]
 
         if self.scale:
-            train_data = df_data[border1s[0]:border2s[0]]
+            train_data = df_data[border1s[0]:border2s[0]] # 它只是用 train_data 来计算均值和方差，但对所有数据都做归一化
             self.scaler.fit(train_data.values)
             data = self.scaler.transform(df_data.values)
         else:
