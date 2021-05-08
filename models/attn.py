@@ -44,6 +44,7 @@ class ProbAttention(nn.Module):
         self.output_attention = output_attention
         self.dropout = nn.Dropout(attention_dropout)
 
+    # Algorithm 1 Steps 2--6 (return QK^T)
     def _prob_QK(self, Q, K, sample_k, n_top): # n_top: c*ln(L_q)
         # Q [B, H, L, D]
         B, H, L_K, E = K.shape

@@ -12,11 +12,13 @@
             "console": "integratedTerminal",
             "args": [
                 "--model", "informer",
-                "--data", "ETTh1",
+                // "--root_path", "D:\\ResearchData\\Time_Series_Forecasting\\Umass\\Home dataset",
+                // "--root_path","./data/ETT/",
+                "--data", "UmassHomeA",
                 "--features", "M", 
                 "--seq_len", "48",
                 "--label_len", "48",
-                "--pred_len", "24",
+                "--pred_len", "1", // 24
                 "--e_layers", "2",
                 "--d_layers", "1",
                 "--attn", "prob",

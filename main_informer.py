@@ -9,8 +9,8 @@ parser = argparse.ArgumentParser(description='[Informer] Long Sequences Forecast
 parser.add_argument('--model', type=str, required=True, default='informer',help='model of experiment, options: [informer, informerstack, informerlight(TBD)]')
 
 parser.add_argument('--data', type=str, required=True, default='ETTh1', help='data')
-parser.add_argument('--root_path', type=str, default='./data/ETT/', help='root path of the data file')
-parser.add_argument('--data_path', type=str, default='ETTh1.csv', help='data file')    
+parser.add_argument('--root_path', type=str, default=None, help='root path of the data file')
+parser.add_argument('--data_path', type=str, default=None, help='data file')
 parser.add_argument('--features', type=str, default='M', help='forecasting task, options:[M, S, MS]; M:multivariate predict multivariate, S:univariate predict univariate, MS:multivariate predict univariate')
 parser.add_argument('--target', type=str, default='OT', help='target feature in S or MS task')
 parser.add_argument('--freq', type=str, default='h', help='freq for time features encoding, options:[s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly], you can also use more detailed freq like 15min or 3h')
@@ -73,12 +73,22 @@ data_parser = {
     'ETTh2':{'data':'ETTh2.csv','T':'OT','M':[7,7,7],'S':[1,1,1],'MS':[7,7,1]},
     'ETTm1':{'data':'ETTm1.csv','T':'OT','M':[7,7,7],'S':[1,1,1],'MS':[7,7,1]},
     'ETTm2':{'data':'ETTm2.csv','T':'OT','M':[7,7,7],'S':[1,1,1],'MS':[7,7,1]},
+    # TODO target name 还有最后那个都要改
+    'UmassHomeA':{
+        # 'root':"D:\\ResearchData\\Time_Series_Forecasting\\Umass\\Home dataset",
+        'data':None,
+        'T':'use [kW]',
+        'M':[15,15,15],'S':[1,1,1],'MS':[15,15,1]
+    }
 }
 if args.data in data_parser.keys():
     data_info = data_parser[args.data]
+    # args.root_path = data_info['root']
     args.data_path = data_info['data'] # 数据文件名
     args.target = data_info['T'] # 要预测的目标特征
     args.enc_in, args.dec_in, args.c_out = data_info[args.features] # enc_in, dec_in, c_out 三个维度
+
+
 
 # 把类似 '3,2,1' 的字符串解析为 [3, 2, 1] 这样的整数数组
 # stack encoder layers
