@@ -5,26 +5,30 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "main_informer",
+            "name": "UmassHomeA",
             "type": "python",
             "request": "launch",
             "program": "main_informer.py",
             "console": "integratedTerminal",
             "args": [
-                "--model", "informer",
-                // "--root_path", "D:\\ResearchData\\Time_Series_Forecasting\\Umass\\Home dataset",
-                // "--root_path","./data/ETT/",
-                "--data", "UmassHomeA",
-                "--features", "M", 
-                "--seq_len", "48",
-                "--label_len", "48",
-                "--pred_len", "1", // 24
-                "--e_layers", "2",
-                "--d_layers", "1",
-                "--attn", "prob",
-                "--des", "'Exp'",
-                "--itr", "5", 
-                "--factor", "3",
+                "--model", "informer", "--root_path", "./data/Umass", "--data", "UmassHomeA",  "--features", "MS", "--seq_len", "48", "--label_len", "48", "--e_layers", "2", "--d_layers", "1", "--des", "'Exp'", "--factor", "3",
+                "--itr", "5", // 重复实验次数
+                "--attn", "prob", // 注意力机制类型：测试取值 prob, intprob, full, intfull
+                "--pred_len", "1", // 测试取值： 从 1 到24
+            ]
+        },
+        {
+            "name": "ETTh1",
+            "type": "python",
+            "request": "launch",
+            "program": "ETT",
+            "console": "integratedTerminal",
+            "args": [
+                "--model", "informer", "--root_path","./data/ETT/", "--data", "ETTh1", "--seq_len", "48", "--label_len", "48","--e_layers", "2", "--d_layers", "1", "--des", "'Exp'", "--factor", "3",
+                "--features", "MS",  // M: 一次预测多个目标, MS: 预测单个目标
+                "--itr", "5", // 重复实验次数
+                "--attn", "prob", // 注意力机制类型：测试取值 prob, intprob, full, intfull
+                "--pred_len", "24", // 测试取值： 从 1 到24
             ]
         }
     ]

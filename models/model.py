@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from utils.masking import TriangularCausalMask, ProbMask
 from models.encoder import Encoder, EncoderLayer, ConvLayer, EncoderStack
 from models.decoder import Decoder, DecoderLayer
-from models.attn import FullAttention, ProbAttention, AttentionLayer
+from models.attn import FullAttention, ProbAttention, AttentionLayer, InterpretableAttentionLayer, InterpretableProbAttention, InterpretableFullAttention
 from models.embed import DataEmbedding
 
 class Informer(nn.Module):
@@ -23,13 +23,18 @@ class Informer(nn.Module):
         self.enc_embedding = DataEmbedding(enc_in, d_model, embed, freq, dropout)
         self.dec_embedding = DataEmbedding(dec_in, d_model, embed, freq, dropout)
         # Attention
+        
         Attn = ProbAttention if attn=='prob' else FullAttention
+        InterpretableAttn = InterpretableProbAttention if attn=='intprob' else InterpretableFullAttention
         # Encoder
         self.encoder = Encoder(
             [
                 EncoderLayer(
-                    AttentionLayer(Attn(False, factor, attention_dropout=dropout, output_attention=output_attention), 
-                                d_model, n_heads),
+                    # PZ 
+                    # AttentionLayer(Attn(False, factor, attention_dropout=dropout, output_attention=output_attention), 
+                    #             d_model, n_heads),
+                    InterpretableAttentionLayer(InterpretableAttn(False, factor, attention_dropout=dropout, output_attention=output_attention), d_model, n_heads) if attn=='intprob' or attn=='intfull'
+                    else AttentionLayer(Attn(False, factor, attention_dropout=dropout, output_attention=output_attention), d_model, n_heads),
                     d_model,
                     d_ff,
                     dropout=dropout,
@@ -47,8 +52,11 @@ class Informer(nn.Module):
         self.decoder = Decoder(
             [
                 DecoderLayer(
-                    AttentionLayer(Attn(True, factor, attention_dropout=dropout, output_attention=False), 
-                                d_model, n_heads),
+                    # PZ
+                    # AttentionLayer(Attn(True, factor, attention_dropout=dropout, output_attention=False), 
+                    #             d_model, n_heads),
+                    InterpretableAttentionLayer(InterpretableAttn(False, factor, attention_dropout=dropout, output_attention=output_attention), d_model, n_heads) if attn=='intprob' or attn=='intfull'
+                    else AttentionLayer(Attn(False, factor, attention_dropout=dropout, output_attention=output_attention), d_model, n_heads),
                     AttentionLayer(FullAttention(False, factor, attention_dropout=dropout, output_attention=False), 
                                 d_model, n_heads),
                     d_model,
