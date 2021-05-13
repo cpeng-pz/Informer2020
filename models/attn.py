@@ -238,8 +238,8 @@ class InterpretableAttentionLayer(nn.Module):
         self.inner_attention = attention
         self.query_projection = nn.Linear(d_model, d_keys * n_heads)
         self.key_projection = nn.Linear(d_model, d_keys * n_heads)
-        self.value_projection = nn.Linear(d_model, d_values * n_heads) # TFT 论文公式(14-16)中的 W_V
-        self.out_projection = nn.Linear(d_values * n_heads, d_model) # TFT 论文中公式（13）中的 W_H
+        self.value_projection = nn.Linear(d_model, d_values) # TFT 论文公式(14-16)中的 W_V # TODO 0514，从 d_values * n_heads 改成了 d_values
+        self.out_projection = nn.Linear(d_values, d_model) # TFT 论文中公式（13）中的 W_H # TODO 从 d_values * n_heads 改成了 d_values
         self.n_heads = n_heads
 
     def forward(self, queries, keys, values, attn_mask):

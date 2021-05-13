@@ -13,8 +13,8 @@
             "args": [
                 "--model", "informer", "--root_path", "./data/Umass", "--data", "UmassHomeA",  "--features", "MS", "--seq_len", "48", "--label_len", "48", "--e_layers", "2", "--d_layers", "1", "--des", "'Exp'", "--factor", "3",
                 "--itr", "5", // 重复实验次数
-                "--attn", "prob", // 注意力机制类型：测试取值 prob, intprob, full, intfull
-                "--pred_len", "1", // 测试取值： 从 1 到24
+                "--attn", "intprob", // 注意力机制类型：测试取值 prob, intprob, full, intfull
+                "--pred_len", "24", // 测试取值： 从 1 到24
             ]
         },
         {
