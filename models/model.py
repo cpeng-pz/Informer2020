@@ -61,10 +61,10 @@ class Informer(nn.Module):
                     AttentionLayer(FullAttention(False, factor, attention_dropout=dropout, output_attention=False), 
                                 d_model, n_heads),
                     d_model,
-                    d_ff,
+                    self.pred_len, # pred_len
+                    d_ff=d_ff,
                     dropout=dropout,
                     activation=activation,
-                    pred_len=self.pred_len,
                     case=decoder_case
                 )
                 for l in range(d_layers)

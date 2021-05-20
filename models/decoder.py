@@ -25,7 +25,7 @@ class DecoderLayer(nn.Module):
         self.pred_len = pred_len
 
     def forward(self, x, cross, x_mask=None, cross_mask=None):
-        if self.case == 0 or 1:
+        if self.case in (0,1):
             x = x + self.dropout(self.self_attention(
             x, x, x,
             attn_mask=x_mask
@@ -37,7 +37,7 @@ class DecoderLayer(nn.Module):
             )[0])
         x = self.norm1(x)
 
-        if self.case == 0:  
+        if self.case in (0,):  
             x = x + self.dropout(self.cross_attention(
                 x, cross, cross,
                 attn_mask=cross_mask
