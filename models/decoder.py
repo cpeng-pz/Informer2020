@@ -3,8 +3,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class DecoderLayer(nn.Module):
-    def __init__(self, self_attention, cross_attention, d_model, d_ff=None,
-                 dropout=0.1, activation="relu"):
+    def __init__(self, self_attention, cross_attention, d_model, 
+                pred_len, case=0,
+                d_ff=None, dropout=0.1, activation="relu"):
         super(DecoderLayer, self).__init__()
         d_ff = d_ff or 4*d_model
         self.self_attention = self_attention
@@ -17,17 +18,35 @@ class DecoderLayer(nn.Module):
         self.dropout = nn.Dropout(dropout)
         self.activation = F.relu if activation == "relu" else F.gelu
 
+        # case 0: self-attention input_len = label_len + pred_len, cross-attention input_len = label_len + pred_len
+        # case 1: self-attention input_len = label_len + pred_len, cross-attention input_len = pred_len
+        # case 2: self-attention input_len = pred_len, cross-attention input_len = pred_len
+        self.case = case
+        self.pred_len = pred_len
+
     def forward(self, x, cross, x_mask=None, cross_mask=None):
-        x = x + self.dropout(self.self_attention(
+        if self.case == 0 or 1:
+            x = x + self.dropout(self.self_attention(
             x, x, x,
             attn_mask=x_mask
-        )[0])
+            )[0])
+        else:
+            x = x[:,-self.pred_len:,:] + self.dropout(self.self_attention(
+                x[:,-self.pred_len:,:], x[:,-self.pred_len:,:], x[:,-self.pred_len:,:],
+                attn_mask=x_mask
+            )[0])
         x = self.norm1(x)
 
-        x = x + self.dropout(self.cross_attention(
-            x, cross, cross,
-            attn_mask=cross_mask
-        )[0])
+        if self.case == 0:  
+            x = x + self.dropout(self.cross_attention(
+                x, cross, cross,
+                attn_mask=cross_mask
+            )[0])
+        else:
+            x = x[:,-self.pred_len:,:] + self.dropout(self.cross_attention(
+                x[:,-self.pred_len:,:], cross, cross,
+                attn_mask=cross_mask
+            )[0])
 
         y = x = self.norm2(x)
         y = self.dropout(self.activation(self.conv1(y.transpose(-1,1))))

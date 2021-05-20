@@ -56,6 +56,8 @@ parser.add_argument('--gpu', type=int, default=0, help='gpu')
 parser.add_argument('--use_multi_gpu', action='store_true', help='use multiple gpus', default=False)
 parser.add_argument('--devices', type=str, default='0,1,2,3',help='device ids of multile gpus')
 
+parser.add_argument('--decoder_case', type=str, default='0,1,2',help='case 0: self-attention input_len = label_len + pred_len, cross-attention input_len = label_len + pred_len\n case 1: self-attention input_len = label_len + pred_len, cross-attention input_len = pred_len\n case 2: self-attention input_len = pred_len, cross-attention input_len = pred_len')
+
 args = parser.parse_args()
 
 args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False

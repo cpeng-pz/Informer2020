@@ -49,7 +49,8 @@ class Exp_Informer(Exp_Basic):
                 self.args.activation,
                 self.args.output_attention,
                 self.args.distil,
-                self.device
+                self.device,
+                decoder_case=self.args.decoder_case
             ).float()
         
         if self.args.use_multi_gpu and self.args.use_gpu:
