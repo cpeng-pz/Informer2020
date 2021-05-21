@@ -15,7 +15,7 @@
                 "--pred_len", "24", // 先固定为24
                 "--itr", "5", // 重复实验次数
                 "--attn", "prob", // 注意力机制类型：测试取值 prob, intprob, full, intfull
-                "--decoder_case", "1", // 测试取值： 0, 1, 2
+                "--decoder_case", "0", // 测试取值： 0, 1, 2
             ]
         },
         {
